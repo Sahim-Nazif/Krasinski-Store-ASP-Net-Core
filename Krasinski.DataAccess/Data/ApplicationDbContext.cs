@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Krasinski_Store.Data
+namespace Krasinski_Store.DataAccess.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
