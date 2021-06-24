@@ -1,10 +1,33 @@
-﻿using System;
+﻿using Krasinski.DataAccess.Data.Repository.IRepository;
+using Krasinski_Store.DataAccess.Data;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Krasinski.DataAccess.Data.Repository
 {
-    class UnitOfWork
+   public  class UnitOfWork:IUnitOfWork
     {
+
+        private readonly ApplicationDbContext _db;
+
+        public UnitOfWork(ApplicationDbContext db)
+        {
+            _db = db;
+            Category = new CategoryRepositry(_db);
+
+        }
+
+        public ICategoryRepositry Category { get; private set; }
+
+        public void Dispose()
+        {
+            _db.Dispose();
+        }
+
+        public void Save()
+        {
+            _db.SaveChanges();
+        }
     }
 }

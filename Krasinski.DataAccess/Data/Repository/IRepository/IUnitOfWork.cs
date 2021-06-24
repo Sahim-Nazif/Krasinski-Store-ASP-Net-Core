@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Krasinski.DataAccess.Data.Repository.IRepository
 {
-    interface IUnitOfWork
+    public interface IUnitOfWork :IDisposable
     {
+        ICategoryRepositry Category { get; }
+        public void Save();
+
     }
 }
