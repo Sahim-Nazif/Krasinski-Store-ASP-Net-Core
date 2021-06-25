@@ -12,7 +12,10 @@ using Krasinski_Store.DataAccess.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using Krasinski.DataAccess.Data.Repository.IRepository;
+using Krasinski.DataAccess.Data.Repository;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Krasinski.Utility;
 
 namespace Krasinski_Store
 {
@@ -31,9 +34,12 @@ namespace Krasinski_Store
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddControllersWithViews().AddNewtonsoftJson().AddRazorRuntimeCompilation();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddRazorPages();
         }
 
