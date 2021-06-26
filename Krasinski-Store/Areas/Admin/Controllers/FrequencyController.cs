@@ -1,5 +1,6 @@
 ﻿using Krasinski.DataAccess.Data.Repository.IRepository;
 using Krasinski.Models;
+
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,12 @@ namespace Krasinski_Store.Areas.Admin.Controllers
     public class FrequencyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+       
 
         public FrequencyController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+          
         }
         public IActionResult Index()
         {
