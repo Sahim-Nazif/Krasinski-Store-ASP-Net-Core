@@ -14,7 +14,7 @@ const loadDataTable = () => {
         },
         "columns": [
             { "data": "name", "width": "50%" },
-            { "data": "frquencycount", "width": "20%" },
+            { "data": "frquency count", "width": "20%" },
             {
                 "data": "id",
                 "render": function (data) {
