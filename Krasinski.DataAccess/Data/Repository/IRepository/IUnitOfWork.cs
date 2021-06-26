@@ -8,6 +8,7 @@ namespace Krasinski.DataAccess.Data.Repository.IRepository
     {
         ICategoryRepositry Category { get; }
         IFrequencyRepository Frequency { get; }
+        IServiceRepository Service { get; }
         public void Save();
 
     }

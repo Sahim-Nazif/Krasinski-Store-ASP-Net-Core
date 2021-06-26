@@ -16,13 +16,14 @@ namespace Krasinski.DataAccess.Data.Repository
             _db = db;
             Category = new CategoryRepositry(_db);
             Frequency = new FrequencyRepository(_db);
+            Service = new ServiceRepository(_db);
 
         }
 
         public ICategoryRepositry Category { get; private set; }
 
         public IFrequencyRepository Frequency { get; private set; }
-
+        public IServiceRepository Service { get; private set; }
         public void Dispose()
         {
             _db.Dispose();
