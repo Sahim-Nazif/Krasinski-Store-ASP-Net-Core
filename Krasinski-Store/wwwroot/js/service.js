@@ -13,7 +13,7 @@ const loadDataTable = () => {
             "dataType": "json"
         },
         "columns": [
-            { "data": "name", "width": "50%" },
+            { "data": "name", "width": "20%" },
             { "data": "category.name", "width": "20%" },
             { "data": "price", "width": "15%" },
             { "data": "frequency.frequencyCount", "width": "15%" },
