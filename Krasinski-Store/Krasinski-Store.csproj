@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Krasinski.DataAccess\Krasinski.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\services\" />
+  </ItemGroup>
+
 </Project>

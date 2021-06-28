@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Krasinski.Models.ViewModel;
 using Krasinski.Models;
-
+using System.IO;
 namespace Krasinski_Store.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -15,6 +15,9 @@ namespace Krasinski_Store.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _hostEnvironment;
+
+        [BindProperty]
+        public ServiceVM ServVM { get; set; }
         public ServiceController(IUnitOfWork unitOfWork, IWebHostEnvironment hostEnvironment)
         {
             _unitOfWork = unitOfWork;
@@ -27,7 +30,7 @@ namespace Krasinski_Store.Areas.Admin.Controllers
         }
         public IActionResult Upsert(int ? id)
         {
-            ServiceVM ServVM = new ServiceVM()
+             ServVM = new ServiceVM()
             {
                 Service = new Service(),
                 CategoryList = _unitOfWork.Category.GetCategoryListForDropDown(),
@@ -38,6 +41,68 @@ namespace Krasinski_Store.Areas.Admin.Controllers
                 ServVM.Service = _unitOfWork.Service.Get(id.GetValueOrDefault());
             }
             return View(ServVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Upsert()
+        {
+            if (ModelState.IsValid)
+            {
+                string webRooPath = _hostEnvironment.WebRootPath;
+                var files = HttpContext.Request.Form.Files;
+                if (ServVM.Service.Id == 0)
+                {
+                    string fileName = Guid.NewGuid().ToString();
+                    var uploads = Path.Combine(webRooPath, @"images\services");
+                    var extension = Path.GetExtension(files[0].FileName);
+                    using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                    {
+
+                        files[0].CopyTo(fileStreams);
+                    }
+                    ServVM.Service.ImageUrl = @"\images\services\" + fileName + extension;
+
+                    _unitOfWork.Service.Add(ServVM.Service);
+
+                }
+                else
+                {
+                    var serviceFromDb = _unitOfWork.Service.Get(ServVM.Service.Id);
+
+                    if (files.Count > 0)
+                    {
+                        string fileName = Guid.NewGuid().ToString();
+                        var uploads = Path.Combine(webRooPath, @"images\services");
+                        var extension_new = Path.GetExtension(files[0].FileName);
+
+                        var imagePath = Path.Combine(webRooPath, serviceFromDb.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                        }
+                        using(var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension_new), FileMode.Create))
+                    {
+
+                            files[0].CopyTo(fileStreams);
+                        }
+                        ServVM.Service.ImageUrl = @"\images\services\" + fileName + extension_new;
+                    }
+                    else
+                    {
+                        ServVM.Service.ImageUrl = serviceFromDb.ImageUrl;
+                    }
+                    _unitOfWork.Service.Update(ServVM.Service);
+                }
+                _unitOfWork.Save();
+                return RedirectToAction(nameof(Index));
+
+            }
+            else
+            {
+                return View(ServVM);
+            }
+        
         }
         #region
         public IActionResult GetAll()
